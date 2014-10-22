@@ -10,19 +10,15 @@ import sys
 # Cliente UDP simple.
 
 
-
 # Dirección IP del servidor.
 point = sys.argv
 SERVER = point[1]
 PORT = int(point[2])
 
-#linea = ' '.join(point[4])
-#print linea
-
 
 # Contenido que vamos a enviar
 if point[3] == 'register':
-    LINE = 'REGISTER sip: ' + point[4] + ' SIP/2.0 ' + '\r\n\r\n'
+    LINE = 'REGISTER sip: ' + point[4] + ' SIP/2.0 ' + point[5] '\r\n\r\n'
     #REGISTER sip:luke@polismassa.com SIP/2.0\r\n\r\n
 
 # Creamos el socket, lo configuramos y lo atamos a un servidor/puerto
