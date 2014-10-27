@@ -20,9 +20,10 @@ if len(point) != 6:
 else:
     # Contenido que vamos a enviar
     if point[3] == 'register':
-        LINE = 'REGISTER sip: ' + point[4] + ' SIP/2.0 ' + '\r\n'\
- + 'Expires: ' + point[5] + '\r\n\r\n'
-    #REGISTER sip:luke@polismassa.com SIP/2.0\r\n\r\n
+        LINE = 'REGISTER sip: ' + point[4] + ' SIP/2.0 ' + '\r\n' +\
+ 'Expires: ' + point[5] + '\r\n\r\n'
+        #REGISTER sip:luke@polismassa.com SIP/2.0\r\n\r\n
+
     # Creamos el socket, lo configuramos y lo atamos a un servidor/puerto
     my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     my_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -36,6 +37,6 @@ else:
     print 'Recibido -- ', data
     print "Terminando socket..."
 
-    # Cerramos todo
+    #Cerramos todo
     my_socket.close()
     print "Fin."
