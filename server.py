@@ -26,7 +26,7 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
             if not LINE:
                 break
             print "El cliente nos manda: " + LINE
-            correo = LINE.split()[1][4:]
+            clients = LINE.split()[1][4:]
             IP = self.client_address[0]
             self.wfile.write("SIP/2.0 200 OK\r\n\r\n")
             expires = LINE.split("\r\n")[1][8:]
@@ -37,24 +37,24 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
                 total = time.time() + expires
                 caduca = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(total))
                 if expires == 0:
-                    del agenda[Correo]
-                    print "Eliminamos a: " + correo
+                    del agenda[clients]
+                    print "Eliminamos a: " + clients
                 else:
-                    agenda[correo] = IP
+                    agenda[clients] = IP
 
                 self.wfile.write("SIP/2.0 200 OK\r\n\r\n")
-                self.register2life(correo, IP, caduca)
+                self.register2life(clients, IP, caduca)
                 print "Todos los Clientes: " + agenda
 
             print "Buscamos clientes: "
             self.buscar_clientes(agenda)
 
-    def register2life(self, correo, IP, caduca):
+    def register2life(self, clients, IP, caduca):
 
         fich = open('registered.txt', 'r+')
         linea = fich.readlines()
         if linea ==[]:
-            fich.write('correo' + '\t' + 'IP' + '\t' + 'Expires' + '\n')
+            fich.write('clients' + '\t' + 'IP' + '\t' + 'Expires' + '\n')
         fich.close()
 
     def buscar_clientes(self, agenda):
@@ -67,9 +67,9 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
                 hora = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(time.time()))
                 hora = hora.split(' ')[1]
                 if caduca == hora:
-                    correo = cliente.split(' ')[0]
-                    print correo
-                    del agenda[correo]
+                    clients = cliente.split(' ')[0]
+                    print clients
+                    del agenda[clients]
                     self.wfile.write("SIP/2.0 200 OK\r\n\r\n")
         fich.close()
 
