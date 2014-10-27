@@ -7,6 +7,7 @@ en UDP simple
 
 import SocketServer
 import sys
+import time
 
 
 class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
@@ -14,27 +15,51 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
     Echo server class
     """
 
+    def register2file(self):
+        fichero = open('registered.txt', 'w')
+        cadena = 'User'+ '\t' + 'IP' + '\t' + 'Expires' '\r\n'
+        for x in Direcciones.keys():
+            fecha_hora = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(Direcciones[x][1]))
+            cadena += x + '\t' + Direcciones[x][0] + '\t' + fecha_hora + '\r\n'
+        fichero.write(cadena)
+        fichero.close()
+        
+
     def handle(self):
         # Escribe dirección y puerto del cliente (de tupla client_address)
-        print self.client_address
+        self.client_address
+        for x in Direcciones.keys():
+            tiempo_actual = time.time()
+            if Direcciones[x][1] < tiempo_actual:
+                del Direcciones[x]
+
         while 1:
             # Leyendo línea a línea lo que nos envía el cliente
             line = self.rfile.read()
             print line
             if line != '' :
-                Direcciones = {}
                 linea = line.split()
                 if linea[0] == 'REGISTER':
-                    LINE = 'SIP/2.0 OK 200 ' + '\r\n\r\n'
-                    self.wfile.write(LINE)
-                    Direcciones[linea[2]] = self.client_address[0]
-                    print Direcciones
+                    if linea[5] == '0':
+                        if Direcciones.has_key(linea[2]) == 1:
+		            del Direcciones[linea[2]]
+                    if linea[5] > '0':
+                        if Direcciones.has_key(linea[2]) == 0:
+                            tiempo = float(time.time()) + float(linea[5])
+                            Direcciones[linea[2]] = (self.client_address[0], tiempo)
+                LINE = 'SIP/2.0 OK 200 ' + '\r\n\r\n'
+                self.wfile.write(LINE)
+            self.register2file()
+            print 'OLAAAAAAAAAAAaaa'
             if not line:
                 break
 
+
 if __name__ == "__main__":
     # Creamos servidor de eco y escuchamos
-    puerto = int(sys.argv[1])
+    point = sys.argv
+    puerto = int(point[1])
     serv = SocketServer.UDPServer(("", puerto), SIPRegisterHandler)
     print "Lanzando servidor UDP de eco..."
+    Direcciones = {}
     serv.serve_forever()
