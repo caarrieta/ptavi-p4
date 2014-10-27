@@ -18,16 +18,16 @@ SERVER = sys.argv[1]
 PORT = int(sys.argv[2])
 EXPIRES = sys.argv[5]
 
+# Creamos el socket, lo configuramos y lo atamos a un servidor/puerto
+my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+my_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+my_socket.connect((SERVER, PORT))
+
 # Contenido que vamos a enviar
 CORREO = sys.argv[4]
 LINE = 'REGISTER sip: ' + CORREO + 'SIP/2.0\r\n' +  '\r\n\r\n'
 CABECERA = "Expires: " + EXPIRES + '\r\n\r\n'
 LINE = LINE + CABECERA
-
-# Creamos el socket, lo configuramos y lo atamos a un servidor/puerto
-my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-my_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-my_socket.connect((SERVER, PORT))
 
 print "Enviando: " + LINE
 my_socket.send(LINE + '\r\n')
