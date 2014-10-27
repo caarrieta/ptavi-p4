@@ -26,7 +26,7 @@ my_socket.connect((SERVER, PORT))
 
 # Contenido que vamos a enviar
 CLIENT = sys.argv[4]
-LINE = METHOD 'sip: ' + CORREO + 'SIP/2.0\r\n' +  '\r\n\r\n'
+LINE = METHOD + ' sip:' + CLIENT + 'SIP/2.0\r\n' +  '\r\n\r\n'
 CABECERA = "Expires: " + EXPIRES + '\r\n\r\n'
 LINE = LINE + CABECERA
 
