@@ -19,7 +19,6 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
         # Escribe dirección y puerto del cliente (de tupla client_address)
         print self.client_address
         self.wfile.write("Hemos recibido tu peticion:\t")
-        self.wfile.write('SIP/2.0 200 OK\r\n\r\n')
         while 1:
             # Leyendo línea a línea lo que nos envía el cliente
             LINE = self.rfile.read()  
@@ -28,10 +27,17 @@ class SIPRegisterHandler(SocketServer.DatagramRequestHandler):
             print "El cliente nos manda: " + LINE
             CORREO = LINE.split()[1][4:]
             IP = self.client_address[0]
-            print "Correo: " + CORREO + " IP: " + IP
-            agenda[CORREO] = IP
-            print agenda
-            
+            self.wfile.write("SIP/2.0 200 OK\r\n\r\n")
+            expires = LINE.split("\r\n")[1][8:]
+            print "Expires: " + str(expires)
+
+            if expires == 0:
+                del agenda[CORREO]
+                self.wfile.write("SIP/2.0 200 OK\r\n\r\n")
+                print "Eliminamos a: " + CORREO
+            else:
+                agenda[CORREO] = IP
+
 if __name__ == "__main__":
     # Creamos servidor de eco y escuchamos
     #PORT = int(sys.argv[2])
