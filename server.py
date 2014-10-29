@@ -64,6 +64,6 @@ if __name__ == "__main__":
     point = sys.argv
     puerto = int(point[1])
     serv = SocketServer.UDPServer(("", puerto), SIPRegisterHandler)
-    print "Lanzando servidor UDP de eco..."
+    print "Lanzando servidor UDP de SIP... \r\n"
     Direcciones = {}
     serv.serve_forever()
